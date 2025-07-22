@@ -9,6 +9,7 @@ import './utils/forms.js';
 import './utils/anchors.js';
 import './utils/marquee.js';
 import './utils/accordion.js';
+import './utils/modals.js';
 
 import './lib/lib.js';
 import './anim/anim.js';

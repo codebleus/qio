@@ -456,10 +456,10 @@
 						</div>
 						<div class="project-overview__main">
 							<div class="project-overview__video project-overview__video_mob">
-								<video data-videojs src="./files/atlanty.mp4"></video>
+								<video data-videojs src="/files/atlanty.mp4"></video>
 							</div>
 							<div class="project-overview__video project-overview__video_mob">
-								<video data-videojs src="./files/atlanty-mainpage.mp4"></video>
+								<video data-videojs src="/files/atlanty-mainpage.mp4"></video>
 							</div>
 						</div>
 						<div class="project-overview__manifesto">
@@ -472,7 +472,7 @@
 						</div>
 						<div class="project-overview__overview">
 							<div class="project-overview__overview-video">
-								<video data-videojs src="./files/atlanty-ov.mp4"></video>
+								<video data-videojs src="/files/atlanty-ov.mp4"></video>
 							</div>
 							<div class="project-overview__bg">
 								<div style="background-image: url(img/content/25.webp)" class="project-overview__bg-image"></div>
@@ -517,6 +517,27 @@
 					<span class="footer__txt"><a href="#" target="_blank" class="footer__link">CONFIDENTIAL POLICY</a></span>
 				</div>
 			</footer>
+
+			<div id="messageModal" aria-hidden="true" class="modal">
+				<div class="modal__wrapper">
+					<div class="modal__content">
+						<div class="modal__body">
+							<button data-close type="button" class="modal__close">
+								<svg>
+									<use href="#cross-svg"></use>
+								</svg>
+							</button>
+							<div class="modal__inner">
+								<p class="modal__message">
+									Thank you. We have received your application and will process it
+									shortly.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div class="preloader">
 				<div class="preloader__container container">
 					<div class="preloader__icons">

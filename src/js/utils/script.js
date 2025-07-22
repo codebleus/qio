@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/all';
 import { waves } from '../anim/waves';
 import { animNextProject } from '../anim/next-project';
 import Splitting from 'splitting';
+import { closeModal, openModal } from './modals';
 
 export const mm = gsap.matchMedia();
 
@@ -74,7 +75,18 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  document.addEventListener('formSubmitted', function (e) {
+    openModal('messageModal');
+  });
+
   const onClickHandler = e => {
+    if (
+      e.target.closest('.modal-show') &&
+      (!e.target.closest('.modal__content') ||
+        e.target.closest('.modal__close'))
+    ) {
+      closeModal(document.querySelector('.modal_show').id);
+    }
     if (
       e.target.closest('._show-menu') &&
       (!e.target.closest('.menu') || e.target.closest('.menu__close-btn'))
