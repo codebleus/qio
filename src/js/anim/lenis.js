@@ -2,12 +2,12 @@ import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/all';
+import videojs from 'video.js';
 
-// Initialize Lenis
 export const lenis = new Lenis({
   duration: 2,
-  direction: 'vertical', // vertical, horizontal
-  gestureDirection: 'vertical', // vertical, horizontal, both
+  direction: 'vertical',
+  gestureDirection: 'vertical',
   smooth: true,
   mouseMultiplier: 16,
   smoothTouch: false,
@@ -15,24 +15,88 @@ export const lenis = new Lenis({
   infinite: false,
 });
 
-// Use requestAnimationFrame to continuously update the scroll
-function raf(time) {
-  lenis.raf(time);
-  requestAnimationFrame(raf);
+const MOBILE_MQ = window.matchMedia('(max-width: 48em)');
+let pauseTimer = null;
+const PAUSE_DELAY = 150;
+
+const players = (() => {
+  const els = document.querySelectorAll('.projects video');
+  els.forEach(v => {
+    v.setAttribute('playsinline', '');
+    v.muted = true;
+    v.loop = true;
+  });
+  return Array.from(els).map(el => videojs(el));
+})();
+
+function playAll() {
+  players.forEach(p => {
+    const r = p.play();
+    if (r && r.catch) r.catch(() => {});
+  });
 }
 
-requestAnimationFrame(raf);
+function pauseAll() {
+  players.forEach(p => p.pause());
+}
 
-// Synchronize Lenis scrolling with GSAP's ScrollTrigger plugin
-lenis.on('scroll', e => {
+let touchActive = false;
+
+window.addEventListener(
+  'touchstart',
+  e => {
+    if (!MOBILE_MQ.matches) return;
+    touchActive = true;
+    playAll();
+    clearTimeout(pauseTimer);
+  },
+  { passive: true }
+);
+
+window.addEventListener(
+  'touchend',
+  e => {
+    if (!MOBILE_MQ.matches) return;
+    if (!e.touches || e.touches.length === 0) {
+      touchActive = false;
+      clearTimeout(pauseTimer);
+      pauseTimer = setTimeout(pauseAll, PAUSE_DELAY);
+    }
+  },
+  { passive: true }
+);
+
+window.addEventListener(
+  'touchcancel',
+  () => {
+    if (!MOBILE_MQ.matches) return;
+    clearTimeout(pauseTimer);
+    pauseTimer = setTimeout(() => {
+      if (!touchActive) pauseAll();
+    }, 400);
+  },
+  { passive: true }
+);
+
+lenis.on('scroll', () => {
   ScrollTrigger.update();
+  if (!MOBILE_MQ.matches) return;
+  playAll();
+  if (!touchActive) {
+    clearTimeout(pauseTimer);
+    pauseTimer = setTimeout(pauseAll, PAUSE_DELAY);
+  }
 });
 
-// Add Lenis's requestAnimationFrame (raf) method to GSAP's ticker
-// This ensures Lenis's smooth scroll animation updates on each GSAP tick
 gsap.ticker.add(time => {
-  lenis.raf(time * 1000); // Convert time from seconds to milliseconds
+  lenis.raf(time * 1000);
+});
+gsap.ticker.lagSmoothing(0);
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) pauseAll();
 });
 
-// Disable lag smoothing in GSAP to prevent any delay in scroll animations
-gsap.ticker.lagSmoothing(0);
+window.addEventListener('resize', () => {
+  if (!MOBILE_MQ.matches) pauseAll();
+});

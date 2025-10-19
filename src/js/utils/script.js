@@ -38,6 +38,23 @@ const observe = (anchors, triggers, start) => {
       if (isMainpage) {
         removeClasses(anc, '_is-active');
         anchors[idx].parentElement.classList.add('_is-active');
+        if (document.querySelector('.nav__scroll-btn')) {
+          if (idx === anchors.length - 1) {
+            document
+              .querySelector('.nav__scroll-btn_up')
+              .classList.add('_is-active');
+            document
+              .querySelector('.nav__scroll-btn_down')
+              .classList.remove('_is-active');
+          } else {
+            document
+              .querySelector('.nav__scroll-btn_up')
+              .classList.remove('_is-active');
+            document
+              .querySelector('.nav__scroll-btn_down')
+              .classList.add('_is-active');
+          }
+        }
       } else {
         removeClasses(anchors, '_is-active');
         anchors[idx].classList.add('_is-active');
@@ -151,7 +168,7 @@ window.addEventListener('load', function () {
 
   if (document.querySelector('.mainpage')) {
     observe(
-      gsap.utils.toArray('.nav [data-anchor]'),
+      gsap.utils.toArray('.nav__list [data-anchor]'),
       gsap.utils.toArray('[data-section]'),
       'center center'
     );
